@@ -9,7 +9,7 @@ ITEM_PIPELINES = {
 }
 
 DOWNLOADER_MIDDLEWARES = {
-     # 'scrapyjs.SplashMiddleware': 725,
+     'scrapyjs.SplashMiddleware': 725,
     'dirbot.splashmware.CustomSplashMiddleware': 700,
 }
 
