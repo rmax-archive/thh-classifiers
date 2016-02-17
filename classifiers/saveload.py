@@ -27,7 +27,7 @@ if __name__ == '__main__':
     print "data preparation completed"
     # classifier train
     dir_name = "clftest"
-    clf_path = os.path.join(".", dir_name, "treeclf.pkl")
+    clf_path = os.path.join("/media/sf_temp", dir_name, "treeclf.pkl")
     treeclf = TreeClassifier(classifier=svm.LinearSVC, maxlevel=mcc_max_level)
     treeclf.fit(X_train, y_train)
     print "fit completed"
@@ -38,7 +38,7 @@ if __name__ == '__main__':
     y_pred = treeclf.predict(X_test)
     print y_pred
     y_pred2 = treeclf2.predict(X_test)
-    for level in range(1,3):
+    for level in range(1,2):
         print "Level {}".format(level)
         print "trained accuracy: {}".format(mc_accuracy_score(y_test, y_pred, level=level))
         print "loaded accuracy: {}".format(mc_accuracy_score(y_test, y_pred2, level=level))

@@ -9,27 +9,37 @@ from dirbot.items import Website
 class DmozSpider(Spider):
     name = "dmoz"
     # allowed_domains = ["dmoz.org"]
-    follow_site_url = 0
-    start_urls = [
-        "http://www.dmoz.org/Computers/",
-        "http://www.dmoz.org/Arts/",
-        "http://www.dmoz.org/Business/",
-        "http://www.dmoz.org/Games/",
-        "http://www.dmoz.org/Health/",
-        "http://www.dmoz.org/Home/",
-        "http://www.dmoz.org/Recreation/",
-        "http://www.dmoz.org/Science/",
-        "http://www.dmoz.org/Sports/",
-        "http://www.dmoz.org/Society/",
-        "http://www.dmoz.org/Regional/",
-        "http://www.dmoz.org/News/",
-        "http://www.dmoz.org/Reference/",
-        "http://www.dmoz.org/Shopping/",
-        # "http://www.dmoz.org/Computers/Programming/Languages/Python/Books/",
-        # "http://www.dmoz.org/Computers/Programming/Languages/Python/Resources/",
-    ]
+    follow_site_url = 1
+    # start_urls = [
+    #     "http://www.dmoz.org/Computers/",
+    #     "http://www.dmoz.org/Arts/",
+    #     "http://www.dmoz.org/Business/",
+    #     "http://www.dmoz.org/Games/",
+    #     "http://www.dmoz.org/Health/",
+    #     "http://www.dmoz.org/Home/",
+    #     "http://www.dmoz.org/Recreation/",
+    #     "http://www.dmoz.org/Science/",
+    #     "http://www.dmoz.org/Sports/",
+    #     "http://www.dmoz.org/Society/",
+    #     "http://www.dmoz.org/Regional/",
+    #     "http://www.dmoz.org/News/",
+    #     "http://www.dmoz.org/Reference/",
+    #     "http://www.dmoz.org/Shopping/",
+    #     # "http://www.dmoz.org/Computers/Programming/Languages/Python/Books/",
+    #     # "http://www.dmoz.org/Computers/Programming/Languages/Python/Resources/",
+    # ]
+    start_urls = ["http://www.dmoz.org"]
 
     def parse(self, response):
+        sel = Selector(response)
+        categories = response.xpath('//div[@id="catalogs"]/div[@class="one-third"]/span/a/@href').extract()
+        for url in categories:
+            full_url = urljoin(response.url, url)
+            logging.debug(full_url)
+            yield Request(url=full_url,
+                              callback=self.parse_cat)
+
+    def parse_cat(self, response):
         sel = Selector(response)
         category = response.xpath('//ul[@class="navigate"]/li[@class="last"]/strong/text()').extract()[0]
         category1 = response.xpath('//ul[@class="navigate"]/li[2]/a/text()').extract()
@@ -74,6 +84,6 @@ class DmozSpider(Spider):
     def parse_site_head(self, response):
         item = response.meta["item"]
         item["html_code"] = response.body
-        text_list = response.xpath('//*/text()').extract()
-        item["page_text"] = " ".join(text_list)
+        # text_list = response.xpath('//*/text()').extract()
+        # item["page_text"] = " ".join(text_list)
         yield item
