@@ -13,6 +13,10 @@ DOWNLOADER_MIDDLEWARES = {
     'dirbot.splashmware.CustomSplashMiddleware': 700,
 }
 
+EXTENSIONS = {
+    'scrapy.extensions.throttle.AutoThrottle': None,
+}
+
 SPLASH_URL = 'http://localhost:8050/'
 SPLASH_USER = ''
 SPLASH_PASS = ''

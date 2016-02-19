@@ -3,7 +3,7 @@ from scrapy.spiders import Spider
 from scrapy.selector import Selector
 from scrapy import Request
 import logging
-from dirbot.items import Website
+from dirbot.items import WebsiteItem
 
 
 class DmozSpider(Spider):
@@ -40,18 +40,20 @@ class DmozSpider(Spider):
                               callback=self.parse_cat)
 
     def parse_cat(self, response):
+        str_fix = lambda x : x.encode('utf-8').strip()
         sel = Selector(response)
-        category = response.xpath('//ul[@class="navigate"]/li[@class="last"]/strong/text()').extract()[0]
-        category1 = response.xpath('//ul[@class="navigate"]/li[2]/a/text()').extract()
+        # category = response.xpath('//ul[@class="navigate"]/li[@class="last"]/strong/text()').extract()[0]
+        # category1 = response.xpath('//ul[@class="navigate"]/li[2]/a/text()').extract()
         categories = response.xpath('//ul[@class="navigate"]/li//text()').extract()
-        if not category1:
-            category1 = response.xpath('//ul[@class="navigate"]/li[2]/strong/text()').extract()
-        if category1:
-            category1 = category1[0]
-        else:
-            category1 = None
-        logging.debug(category)
-        logging.debug(category1)
+        categories = [str_fix(x) for x in categories]
+        # if not category1:
+        #     category1 = response.xpath('//ul[@class="navigate"]/li[2]/strong/text()').extract()
+        # if category1:
+        #     category1 = category1[0]
+        # else:
+        #     category1 = None
+        # logging.debug(category)
+        # logging.debug(category1)
         dirs = sel.xpath('//ul[@class="directory dir-col"]/li/a/@href')
         for dir_entry in dirs:
             # logging.debug(dir_entry)
@@ -60,20 +62,20 @@ class DmozSpider(Spider):
                 dir_url = urljoin(response.url, dir_url)
                 # logging.debug(dir_url)
                 yield Request(url=dir_url,
-                              callback=self.parse)
+                              callback=self.parse_cat)
 
         sites = sel.xpath('//ul[@class="directory-url"]/li')
         for site in sites:
-            item = Website()
+            item = WebsiteItem()
             item["dmoz_page"] = response.url
             url = site.xpath('a/@href').extract()
             if url:
-                item['category'] = category
+                # item['category'] = category
                 item['categories'] = categories
-                item["category1"] = category1
-                item['url'] = url[0]
-                item['name'] = site.xpath('a/text()').extract()[0]
-                item['description'] = site.xpath('text()').re('-\s[^\n]*\\r')[0]
+                # item["category1"] = category1
+                item['url'] = str_fix(url[0])
+                item['name'] = str_fix(site.xpath('a/text()').extract()[0])
+                item['description'] = str_fix(site.xpath('text()').re('-\s[^\n]*\\r')[0])
                 if self.follow_site_url:
                     yield Request(url=item['url'],
                                   callback=self.parse_site_head,
@@ -82,8 +84,9 @@ class DmozSpider(Spider):
                     yield item
 
     def parse_site_head(self, response):
+        str_fix = lambda x : x.decode('utf-8', errors="ignore").strip()
         item = response.meta["item"]
-        item["html_code"] = response.body
+        item["html_code"] = str_fix(response.body)
         # text_list = response.xpath('//*/text()').extract()
         # item["page_text"] = " ".join(text_list)
         yield item

@@ -1,7 +1,7 @@
 from scrapy.item import Item, Field
 
 
-class Website(Item):
+class WebsiteItem(Item):
     name = Field()
     category1 = Field()
     category = Field()
