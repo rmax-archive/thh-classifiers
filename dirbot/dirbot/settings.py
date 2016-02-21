@@ -5,7 +5,7 @@ NEWSPIDER_MODULE = 'dirbot.spiders'
 DEFAULT_ITEM_CLASS = 'dirbot.items.Website'
 
 ITEM_PIPELINES = {
-    # 'dirbot.pipelines.FilterWordsPipeline': 1
+    'dirbot.pipelines.PageHtmlMiddleware': 1
 }
 
 DOWNLOADER_MIDDLEWARES = {

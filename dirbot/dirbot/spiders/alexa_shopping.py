@@ -1,9 +1,10 @@
-from alexa import AlexaSpider
+from dirbot.spiders import PagesCollectionSpider
 
 
-class AlexaShopSpider(AlexaSpider):
+class AlexaShopSpider(PagesCollectionSpider):
     name = "alexa_shop"
     start_urls = [
         'http://www.alexa.com/topsites/category/Top/Shopping',
     ]
-    category = 'news'
+    category = 'shopping'
+    pages = True

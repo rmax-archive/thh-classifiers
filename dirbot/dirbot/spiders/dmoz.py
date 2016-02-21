@@ -9,7 +9,7 @@ from dirbot.items import WebsiteItem
 class DmozSpider(Spider):
     name = "dmoz"
     # allowed_domains = ["dmoz.org"]
-    follow_site_url = 1
+    follow_site_url = 0
     # start_urls = [
     #     "http://www.dmoz.org/Computers/",
     #     "http://www.dmoz.org/Arts/",
