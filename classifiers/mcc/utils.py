@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+from html2text import html2text
+from lxml.html.clean import Cleaner
+from lxml import etree
 
 
 def filter_rare_classes(data, class_field, min_class_size,
@@ -11,3 +14,16 @@ def filter_rare_classes(data, class_field, min_class_size,
         class_rename = class_cnt.index[class_cnt < min_class_size]
         data[class_field][class_rename] = replace_class
     return data
+
+
+def get_text_from_html(html_text, use_markdown=True):
+    if use_markdown:
+        text = html2text(html_text)
+    else:
+        cleaner = Cleaner()
+        cleaner.javascript = False
+        cleaner.style = False
+        # raw_tree = etree.HTML(html_text)
+        tree = etree.HTML(cleaner.clean_html(html_text))
+        text = tree.text_content()
+    return text

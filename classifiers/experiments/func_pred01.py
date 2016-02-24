@@ -11,39 +11,7 @@ import pandas as pd
 import numpy as np
 
 from mcc.utils import filter_rare_classes
-
-
-class FilteredSVC(object):
-
-    def __init__(self, clf, filter=True, min_distance=0.0, replace_class="UNDEFINED"):
-        self.clf = clf
-        self.filter = filter
-        self.replace_class = replace_class
-        self.min_distance = min_distance
-
-    def decision_function(self,X):
-        return self.clf.decision_function(X)
-
-    def get_params(self, deep=True):
-        return self.clf.get_params(deep)
-
-    def predict(self, X):
-        prediction = self.clf.predict(X)
-        if self.filter:
-            decision = self.clf.decision_function(X)
-            decision_fail = decision.max(axis=1) < self.min_distance
-            prediction[decision_fail] = self.replace_class
-        return prediction
-
-    # def transform(self, X, y=None, **fit_params):
-    #     return X.todense()
-    #
-    # def fit_transform(self, X, y=None, **fit_params):
-    #     self.fit(X, y, **fit_params)
-    #     return self.transform(X)
-
-    def fit(self, X, y, sample_weight=None):
-        return self.clf.fit(X, y)
+from mcc.classifier import FilteredSVC
 
 
 if __name__ == '__main__':
@@ -63,7 +31,6 @@ if __name__ == '__main__':
 
     X = data["site_text"]
     y = data["category"]
-
 
     X_train, X_test, y_train, y_test = train_test_split(X, y,
                             test_size=test_sample_size, random_state=42)
