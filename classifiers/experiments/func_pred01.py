@@ -38,7 +38,7 @@ if __name__ == '__main__':
     y_sample = y_train
     X_sample = X_train
     # clf = svm.SVC(probability=True, verbose=True)
-    clf = svm.LinearSVC()
+    clf = svm.LinearSVC(penalty='l1', dual=False)
     clf = FilteredSVC(clf, min_distance=0.1)
     clf_pipeline = Pipeline([('vect', CountVectorizer()),
                         ('tfidf', TfidfTransformer()),

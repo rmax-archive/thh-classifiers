@@ -9,7 +9,7 @@ if __name__ == '__main__':
     data_url = 'http://www.rusarmy.com/forum/'
     # url = 'http://127.0.0.1:8889/functional-classifier'
     # url = 'https://127.0.0.1/functional-classifier/'
-    url = 'https://54.200.77.2/functional-classifier/'
+    url = 'https://54.200.77.2/functional-classifier/4321432'
     headers = {'Authorization': 'Basic YWRtaW46bWVtZXhwYXNz',
                 "Content-Type": "application/json"}
     data_r = requests.get(data_url)

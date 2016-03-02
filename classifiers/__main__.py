@@ -57,6 +57,7 @@ class ClassifyHandler(tornado.web.RequestHandler):
         logging.debug(len(clean_text))
         fclf = _clf["function"]
         page_cat = fclf.predict([clean_text])
+        page_cat.remove("UNDEFINED")
         res.extend(page_cat)
         self.write({"categories":res})
 
