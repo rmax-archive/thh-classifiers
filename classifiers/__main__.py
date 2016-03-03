@@ -48,6 +48,7 @@ _clf = {}
 class ClassifyHandler(tornado.web.RequestHandler):
 
     def post(self, *args, **kwargs):
+        undef_cats = ["UNDEFINED"]
         res = []
         data = tornado.escape.json_decode(self.request.body)
         html_text = data["html"]
@@ -57,7 +58,7 @@ class ClassifyHandler(tornado.web.RequestHandler):
         logging.debug(len(clean_text))
         fclf = _clf["function"]
         page_cat = fclf.predict([clean_text])
-        page_cat.remove("UNDEFINED")
+        page_cat = [x for x in page_cat if not x in undef_cats]
         res.extend(page_cat)
         self.write({"categories":res})
 
