@@ -1,0 +1,8 @@
+scrapy == 1.0.1
+tornado == 4.2
+psutil == 2.2.1
+Twisted == 15.2.1
+scikit-learn
+tornadorpc == 0.1.1
+pandas
+html2text
