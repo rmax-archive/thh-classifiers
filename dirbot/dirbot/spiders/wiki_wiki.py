@@ -1,3 +1,4 @@
+import logging
 from dirbot.spiders import PagesCollectionSpider
 from dirbot.items import WebsiteItem
 
@@ -15,7 +16,7 @@ class WikiSpider(PagesCollectionSpider):
 
     def parsepage(self, response):
         siteurls = response.xpath("//table[contains(@class, 'infobox')]//td//a[@rel='nofollow']/@href").extract()
-        print siteurls
+        logging.debug(siteurls)
         if siteurls:
             for siteurl in siteurls:
                 item = WebsiteItem()
