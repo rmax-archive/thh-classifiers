@@ -4,8 +4,8 @@ from mcc.utils import get_text_from_html
 
 
 if __name__ == "__main__":
-    in_path = "/media/sf_temp/func_class_items.jl"
-    out_path = "/media/sf_temp/func_class_items_texts.json"
+    in_path = "/media/sf_temp/func_class_items2.jl"
+    out_path = "/media/sf_temp/func_class_items_texts2.json"
     cnt = 0
     use_markdown = True
 

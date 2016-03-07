@@ -24,7 +24,7 @@ from mcc.classifier import FilteredSVC
 sample_size = 0
 min_class_size = 100
 test_sample_size = 0.3
-infile = "/media/sf_temp/func_class_items_texts.json"
+infile = "/media/sf_temp/func_class_items_texts2.json"
 class_field = "category"
 all_data = pd.read_json(infile)
 all_data = filter_rare_classes(all_data,
@@ -49,13 +49,14 @@ pipeline = Pipeline([
     ('clf', SGDClassifier()),
 ])
 parameters = {
-    'vect__max_df': (0.5, 0.75, 1.0),
-    'vect__max_features': (None, 5000, 10000, 50000),
+    # 'vect__max_df': (0.5, 0.75, 1.0),
+    'vect__max_features': (None, 10000, 50000),
+    # 'vect__max_features': (None, 5000, 10000, 50000),
     'vect__ngram_range': ((1, 1), (1, 2)),  # unigrams or bigrams
     # 'tfidf__use_idf': (True, False),
     # 'tfidf__norm': ('l1', 'l2'),
     'clf__alpha': (0.00001, 0.000001),
-    'clf__penalty': ('l2', 'elasticnet'),
+    # 'clf__penalty': ('l2', 'elasticnet'),
     # 'clf__n_iter': (10, 50, 80),
 }
 
@@ -81,4 +82,12 @@ if __name__ == "__main__":
     best_parameters = grid_search.best_estimator_.get_params()
     for param_name in sorted(parameters.keys()):
         print("\t%s: %r" % (param_name, best_parameters[param_name]))
+    pipeline.set_params(best_parameters)
+    y_test_pred = pipeline.predict(X_test)
+    y_test_prob = pipeline.decision_function(X_test)
+    print("Train:")
+    print(classification_report(y_train, y_train_pred))
+    print("Test:")
+    print(classification_report(y_test, y_test_pred))
+
 

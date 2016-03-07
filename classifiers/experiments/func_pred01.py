@@ -15,10 +15,12 @@ from mcc.classifier import FilteredSVC
 
 
 if __name__ == '__main__':
+    c = 1
     sample_size = 0
     min_class_size = 50
-    test_sample_size = 0.3
-    infile = "/media/sf_temp/func_class_items_texts.json"
+    test_sample_size = 0.4
+    min_distance = 0.1
+    infile = "/media/sf_temp/func_class_items_texts2.json"
 
     all_data = pd.read_json(infile)
     all_data = filter_rare_classes(all_data, class_field="category", min_class_size=100)
@@ -38,8 +40,8 @@ if __name__ == '__main__':
     y_sample = y_train
     X_sample = X_train
     # clf = svm.SVC(probability=True, verbose=True)
-    clf = svm.LinearSVC(penalty='l1', dual=False)
-    clf = FilteredSVC(clf, min_distance=0.1)
+    clf = svm.LinearSVC(penalty='l2', dual=False, C=c)
+    clf = FilteredSVC(clf, min_distance=min_distance)
     clf_pipeline = Pipeline([('vect', CountVectorizer()),
                         ('tfidf', TfidfTransformer()),
                         ('clf', clf)])

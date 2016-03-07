@@ -171,6 +171,9 @@ class FilteredSVC(object):
     def get_params(self, deep=True):
         return self.clf.get_params(deep)
 
+    def set_params(self, **params):
+        return self.clf.set_params(params)
+
     def predict(self, X):
         prediction = self.clf.predict(X)
         if self.filter:
