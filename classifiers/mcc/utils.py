@@ -27,3 +27,7 @@ def get_text_from_html(html_text, use_markdown=True):
         tree = etree.HTML(cleaner.clean_html(html_text))
         text = tree.text_content()
     return text
+
+
+def check_input_string(text):
+    return len(text) > 100

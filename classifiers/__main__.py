@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 import logging
+from urlparse import urlparse
 import tornado.ioloop
 import tornado.web
 from sklearn.externals import joblib
@@ -10,7 +11,7 @@ from sklearn.pipeline import Pipeline
 from sklearn import svm
 import pandas as pd
 
-from mcc.utils import get_text_from_html
+from mcc.utils import get_text_from_html, check_input_string
 from mcc.classifier import FilteredSVC
 
 
@@ -23,6 +24,14 @@ _ROOT = os.path.abspath(os.path.dirname(__file__))
 FILENAMES = [
     os.path.join(_ROOT, 'settings', 'defaults.conf'),
 ]
+
+
+known_domains = {
+    "www.facebook.com": "social",
+    "www.pinterest.com": "social",
+    "plus.google.com": "social",
+    "www.reddit.com": "news"
+}
 
 
 def load_settings(config_files=(), overrides=()):
@@ -48,18 +57,31 @@ _clf = {}
 class ClassifyHandler(tornado.web.RequestHandler):
 
     def post(self, *args, **kwargs):
+        logging.debug(self.request.uri)
         undef_cats = ["UNDEFINED"]
         res = []
         data = tornado.escape.json_decode(self.request.body)
         html_text = data["html"]
-        clean_text = get_text_from_html(html_text, use_markdown=True)
-        logging.debug(self.request.uri)
-        logging.debug(len(html_text))
-        logging.debug(len(clean_text))
-        fclf = _clf["function"]
-        page_cat = fclf.predict([clean_text])
-        page_cat = [x for x in page_cat if not x in undef_cats]
-        res.extend(page_cat)
+        if check_input_string(html_text):
+            method_path_base = "/functional-classifier/"
+            site_url = self.request.uri.replace(method_path_base, "")
+            parse_res = urlparse(site_url)
+            if parse_res.netloc in known_domains:
+                res = [known_domains[parse_res.netloc]]
+            else:
+                clean_text = get_text_from_html(html_text, use_markdown=True)
+                logging.debug(parse_res.netloc)
+                # logging.debug(self.request.uri)
+                # logging.debug(self.request.path)
+                # logging.debug(self.request.query)
+                logging.debug(len(html_text))
+                logging.debug(len(clean_text))
+                fclf = _clf["function"]
+                page_cat = fclf.predict([clean_text])
+                page_cat = [x for x in page_cat if not x in undef_cats]
+                res.extend(page_cat)
+        else:
+            res = []
         self.write({"categories":res})
 
 
@@ -76,7 +98,8 @@ def make_func_clf(data_file, min_distance=0.0, debug=False):
     all_data = pd.read_json(data_file)
     X = all_data["site_text"]
     y = all_data["category"]
-    svmclf = svm.LinearSVC()
+    c = 1
+    svmclf = svm.LinearSVC(penalty='l2', dual=False, C=c)
     clf = FilteredSVC(svmclf, min_distance=min_distance)
     clf_pipeline = Pipeline([('vect', CountVectorizer()),
                         ('tfidf', TfidfTransformer()),
@@ -98,7 +121,7 @@ if __name__ == "__main__":
     debug = clf_opts['debug']
     data_file = clf_opts['data_file']
     clf_file = clf_opts['clf_file']
-    min_distance = 0.0
+    min_distance = 0.2
     if not os.path.exists(clf_file):
         fclf = make_func_clf(data_file, min_distance, debug)
         joblib.dump(fclf, clf_file)

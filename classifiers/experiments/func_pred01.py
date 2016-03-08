@@ -3,7 +3,7 @@ from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 from sklearn.metrics import classification_report
 from sklearn.cross_validation import train_test_split
 from sklearn.semi_supervised import label_propagation
-from sklearn.linear_model import LogisticRegression
+from sklearn.externals import joblib
 from sklearn.pipeline import Pipeline
 from sklearn import svm
 from sklearn.base import TransformerMixin
@@ -18,9 +18,9 @@ if __name__ == '__main__':
     c = 1
     sample_size = 0
     min_class_size = 50
-    test_sample_size = 0.4
-    min_distance = 0.1
-    infile = "/media/sf_temp/func_class_items_texts2.json"
+    test_sample_size = 0.5
+    min_distance = 0.25
+    infile = "/media/sf_temp/func_class_items_texts.json"
 
     all_data = pd.read_json(infile)
     all_data = filter_rare_classes(all_data, class_field="category", min_class_size=100)
@@ -77,3 +77,5 @@ if __name__ == '__main__':
     # lr = LogisticRegression()
     # lr.fit(lr_X, lr_y)
     # print(classification_report(lr_y, lr.predict(lr_X)))
+    clf_file = "/media/sf_temp/ftest/fclf.pkl"
+    joblib.dump(clf_pipeline, clf_file)

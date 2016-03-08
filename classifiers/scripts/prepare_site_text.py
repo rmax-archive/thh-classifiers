@@ -8,6 +8,7 @@ if __name__ == "__main__":
     out_path = "/media/sf_temp/func_class_items_texts2.json"
     cnt = 0
     use_markdown = True
+    processed_urls = set([])
 
     with open(in_path, "r") as fin:
         with open(out_path, "w") as fout:
@@ -18,6 +19,9 @@ if __name__ == "__main__":
                     item = json.loads(text_line)
                     if "html_code" not in item:
                         continue
+                    if item["url"] in processed_urls:
+                        continue
+                    processed_urls.add(item["url"])
                     cats = [x.replace("\r\n\r\n", "").strip() for x in item.get("categories",[])]
                     cats = [x for x in cats if x and len(x)>1]
                     cats = cats[:-1]

@@ -12,6 +12,7 @@ class WikiGoogleSpider(Spider):
     ]
     keywords = ['wiki']
     category = "wiki"
+    processed_urls = set([])
 
     def start_requests(self):
         for url in self.start_urls:
@@ -29,6 +30,9 @@ class WikiGoogleSpider(Spider):
         urls = response.xpath('//div[@class="g"]//h3/a/@href').extract()
         logging.debug(urls)
         for url in urls:
+            if url in self.processed_urls:
+                continue
+            self.processed_urls.add(url)
             item = WebsiteItem()
             item['url'] = url.replace("/url?q=", "")
             item['category'] = self.category
@@ -39,3 +43,9 @@ class BlogGoogleSpider(WikiGoogleSpider):
     name = "ggl_blogs"
     keywords = ['blog']
     category = "blogs"
+
+
+class SearchGoogleSpider(WikiGoogleSpider):
+    name = "ggl_news"
+    keywords = ['news']
+    category = "news"
