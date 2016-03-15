@@ -8,7 +8,7 @@ if __name__ == '__main__':
     urls_file = "/media/sf_temp/urls"
     url = 'http://127.0.0.1:8889/functional-classifier/{}'
     # url = 'https://127.0.0.1/functional-classifier/'
-    # url = 'https://54.200.77.2/functional-classifier/4321432'
+    url = 'https://54.200.77.2/functional-classifier/{}'
     headers = {'Authorization': 'Basic YWRtaW46bWVtZXhwYXNz',
                 "Content-Type": "application/json"}
     with open(urls_file, "r") as fin:
