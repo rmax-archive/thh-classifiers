@@ -20,7 +20,7 @@ if __name__ == '__main__':
     min_class_size = 50
     test_sample_size = 0.5
     min_distance = 0.25
-    infile = "/media/sf_temp/func_class_items_texts.json"
+    infile = "/media/sf_temp/func_class_items_texts2.json"
 
     all_data = pd.read_json(infile)
     all_data = filter_rare_classes(all_data, class_field="category", min_class_size=100)

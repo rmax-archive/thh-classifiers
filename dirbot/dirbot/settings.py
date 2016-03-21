@@ -9,7 +9,8 @@ ITEM_PIPELINES = {
 }
 
 DOWNLOADER_MIDDLEWARES = {
-     'scrapyjs.SplashMiddleware': 725,
+    'dirbot.middleware.DelayedRequestsMiddleware': 100,
+    'scrapyjs.SplashMiddleware': 725,
     'dirbot.splashmware.CustomSplashMiddleware': 700,
 }
 
@@ -21,7 +22,7 @@ SPLASH_URL = 'http://localhost:8050/'
 SPLASH_USER = ''
 SPLASH_PASS = ''
 
-FB_TOKEN = "ae4bfa92ab0c89e8a078ba04c5fe4cd8"
+FB_TOKEN = "CAAGnihzIbmIBABfzHEP6OuZBO5h01ZAszJTn8KoJ3XBDO6EKQbsKnzeCzZB2Ew4rm1rDMmZCjdjN54AZAd4kgXVhHBcbATjZAZAVmMBSDIgIH3uFnqH6S9SyLXid6WxAZB1GdV3KLG7PKuOkXf6R5Y2oVVCLRnMa4qkrtSw1AdZB7qwqC36SPA92jzflSI26ntwUZD"
 FB_CLIENT_ID = "465686606933602"
 FB_CLIENT_SECRET = "4db6181216f67a9ec566ed6339e2425f"
 

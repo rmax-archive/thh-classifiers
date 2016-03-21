@@ -27,6 +27,8 @@ class FbSearchItem(Item):
 class FbGraphSearchSpider(Spider):
     name = "fb_search"
     query = "Egorov"
+    # query delay in seconds
+    next_page_delay = 10
 
     def get_request(self, query=None,
                     obj_type="user",
@@ -73,7 +75,11 @@ class FbGraphSearchSpider(Spider):
             yield item
 
         if 'paging' in data and 'next' in data['paging']:
-            yield Request(data['paging']['next'], meta={"keywords": kw})
+            yield Request(data['paging']['next'],
+                          dont_filter=True,
+                          meta={"keywords": kw,
+                                'delay_request': self.next_page_delay,
+                          })
 
 
 class FbLongLiveTokenSpider(Spider):

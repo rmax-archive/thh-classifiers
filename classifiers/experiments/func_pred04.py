@@ -33,11 +33,13 @@ def cnn_model(X, y):
         print "pool1.1:", pool1.get_shape()
         pool1 = tf.transpose(pool1, [0, 1, 3, 2])
         print "pool1.2:", pool1.get_shape()
-        pool1 = skflow.ops.dropout(pool1, 0.5)
-        print "pool1.3:", pool1.get_shape()
+        # pool1 = skflow.ops.dropout(pool1, 0.5)
+        # print "pool1.3:", pool1.get_shape()
     print("---------------------------------------------")
     with tf.variable_scope('CNN_Layer1_2'):
-        conv3 = skflow.ops.conv2d(pool1, 10, [net_params["WINDOW_SIZE"], 10],  padding='VALID')
+        conv3 = skflow.ops.conv2d(pool1, net_params["N_FILTERS"],
+                                  [net_params["WINDOW_SIZE"], net_params["N_FILTERS"]],
+                                  padding='VALID')
         print "conv3.1:", conv3.get_shape()
         conv3 = tf.nn.relu(conv3)
         print "conv3.2:", conv3.get_shape()
@@ -46,8 +48,8 @@ def cnn_model(X, y):
         print "pool3.1:", pool3.get_shape()
         pool3 = tf.transpose(pool3, [0, 1, 3, 2])
         print "pool3.2:", pool3.get_shape()
-        pool3 = skflow.ops.dropout(pool3, 0.5)
-        print "pool3.3:", pool1.get_shape()
+        # pool3 = skflow.ops.dropout(pool3, 0.5)
+        # print "pool3.3:", pool3.get_shape()
     print("---------------------------------------------")
     with tf.variable_scope('CNN_Layer2'):
         conv2 = skflow.ops.conv2d(pool3, net_params["N_FILTERS"],
@@ -58,7 +60,7 @@ def cnn_model(X, y):
         print "pool2.1:", pool2.get_shape()
         pool2 = tf.squeeze(pool2, squeeze_dims=[1])
         print "pool2.2:", pool2.get_shape()
-    fc1 = skflow.ops.dnn(pool2, [1024], activation=tf.nn.relu, keep_prob=0.5)
+    fc1 = skflow.ops.dnn(pool2, [100], activation=tf.nn.relu, keep_prob=0.5)
     print "fc1.1:", fc1.get_shape()
     return skflow.models.logistic_regression(fc1, y)
 
@@ -91,16 +93,16 @@ if __name__ == '__main__':
 
     ### Params
 
-    MAX_DOCUMENT_LENGTH = 3000
-    net_params["EMBEDDING_SIZE"] = 20
-    net_params["N_FILTERS"] = 10
+    MAX_DOCUMENT_LENGTH = 4000
+    net_params["EMBEDDING_SIZE"] = 50
+    net_params["N_FILTERS"] = 12
     net_params["WINDOW_SIZE"] = 20
     net_params["FILTER_SHAPE1"] = [net_params["WINDOW_SIZE"], net_params["EMBEDDING_SIZE"]]
     net_params["FILTER_SHAPE2"] = [net_params["WINDOW_SIZE"], net_params["N_FILTERS"]]
     net_params["POOLING_WINDOW"] = 4
     net_params["POOLING_STRIDE"] = 2
 
-    opt_steps = 20
+    opt_steps = 50
     opt_type = "Adam"
     opt_lr = 0.01
     opt_iterations = 10

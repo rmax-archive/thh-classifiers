@@ -2,6 +2,7 @@
 from html2text import html2text
 from lxml.html.clean import Cleaner
 from lxml import etree
+import lxml.html
 
 
 def filter_rare_classes(data, class_field, min_class_size,
@@ -24,7 +25,7 @@ def get_text_from_html(html_text, use_markdown=True):
         cleaner.javascript = False
         cleaner.style = False
         # raw_tree = etree.HTML(html_text)
-        tree = etree.HTML(cleaner.clean_html(html_text))
+        tree = lxml.html.fromstring(cleaner.clean_html(html_text))
         text = tree.text_content()
     return text
 
