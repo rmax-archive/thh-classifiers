@@ -15,7 +15,7 @@ class WebsiteItem(Item):
 
 class PageTypeItem(Item):
     pagetype = Field()
-    url = Field()
+    pageurl = Field()
+    siteurl = Field()
     html_code = Field()
-    page_text = Field()
     img_path = Field()
