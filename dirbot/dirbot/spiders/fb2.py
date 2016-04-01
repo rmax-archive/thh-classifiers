@@ -26,6 +26,7 @@ class FB2Spider(Spider):
         yield Request('https://www.facebook.com', callback=self.log_in)
 
     def log_in(self, response):
+        self.save_response("fb_before_login", response.body)
         # set current account
         self.current_account = self.account
         logging.debug('Logging in with: %s' % self.current_account['email'])
@@ -71,6 +72,7 @@ class FB2Spider(Spider):
             return self.login_finished(response)
 
     def login_finished(self, response):
+        self.save_response("fb_after_login", response.body)
         facebook_ids = ["100001665518840", "100000118429707"]
         reqs = []
         for facebook_id in facebook_ids:
@@ -80,13 +82,17 @@ class FB2Spider(Spider):
         return reqs
 
     def parse_profile(self, response):
+        self.save_response("fb_profile", response.body)
         return Request(response.url + '/info',
                        callback=self.parse_about,
                        meta={"id":response.meta["id"]})
 
+    def save_response(self,page_name, page_body):
+        with open("/media/sf_temp/{}.html".format(page_name), "w") as fout:
+            fout.write(page_body)
+
     def parse_about(self, response):
-        with open("/media/sf_temp/{}.html".format(response.meta["id"]), "w") as fout:
-            fout.write(response.body)
+        self.save_response(response.meta["id"], response.body)
         sel = Selector(response)
         logging.info("name = {}".format(sel.xpath('//title').extract()))
         for comment in sel.xpath('//*[not(self::script)]/comment()'):

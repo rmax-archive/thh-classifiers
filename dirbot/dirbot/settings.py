@@ -3,7 +3,8 @@
 SPIDER_MODULES = ['dirbot.spiders']
 NEWSPIDER_MODULE = 'dirbot.spiders'
 DEFAULT_ITEM_CLASS = 'dirbot.items.Website'
-
+COOKIES_ENABLED = True
+COOKIES_DEBUG = True
 ITEM_PIPELINES = {
     'dirbot.pipelines.PageHtmlMiddleware': 1
 }
@@ -12,6 +13,7 @@ DOWNLOADER_MIDDLEWARES = {
     'dirbot.middleware.DelayedRequestsMiddleware': 100,
     'scrapyjs.SplashMiddleware': 725,
     'dirbot.splashmware.CustomSplashMiddleware': 700,
+    'scrapy.contrib.downloadermiddleware.cookies.CookiesMiddleware': 600,
 }
 
 EXTENSIONS = {
