@@ -18,7 +18,7 @@ function main(splash)
       pages[point] = splash:html()
   end
   return {
-    html = info_html,
+    html = overview_html,
     png = splash:png(),
     cookies = splash:get_cookies(),
     pages = pages,

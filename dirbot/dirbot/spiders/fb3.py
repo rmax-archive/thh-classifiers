@@ -96,7 +96,8 @@ class FB3Spider(Spider):
                            cookies,
                            url,
                            callback,
-                           endpoint="execute"):
+                           endpoint="execute",
+                           ):
         script = self.scripts.get(script_name, "")
         return Request(url=url,
                           cookies=cookies,
@@ -107,7 +108,8 @@ class FB3Spider(Spider):
                                 'endpoint': endpoint,
                                 'timeout': self.splash_timeout},
                             },
-                          callback=callback)
+                          callback=callback,
+                          dont_filter=True)
 
     def parse_profile(self, response):
         if response.status != 200:
@@ -121,11 +123,13 @@ class FB3Spider(Spider):
             self.save_response("fb_profile2", splash_res["html"])
             logging.info(current_url)
             logging.info(new_url)
-            yield self.get_splash_request(script_name="fb_info",
+            req = self.get_splash_request(script_name="fb_info",
                            cookies=cookies,
                            url=new_url,
                            callback=self.parse_info,
                         )
+            req.meta["profile_url"] = current_url
+            yield req
 
     def parse_info(self, response):
         if response.status != 200:
@@ -136,7 +140,7 @@ class FB3Spider(Spider):
             current_url = splash_res['url']
             # new_url = current_url + "/info"
             self.store_img("fb_info.png", splash_res["png"])
-            # self.save_response("fb_info", splash_res["html"])
+            self.save_response("fb_info", splash_res["html"])
             # self.save_response("fb_info", splash_res["html"])
             profile_pages = splash_res.get('pages', {})
             # logging.info(splash_res.get('pages', {}).keys())
@@ -146,3 +150,23 @@ class FB3Spider(Spider):
                 texts = page_sel.xpath('//ul/li[2]/div[contains(@class, "clearfix")]/div[1]//text()').extract()
                 logging.info(page_name)
                 logging.info(texts)
+            friends_url = response.meta["profile_url"] + "/friends"
+            req = self.get_splash_request(script_name="fbcook",
+                           cookies=cookies,
+                           url=friends_url,
+                           callback=self.parse_friends,
+                        )
+            req.meta["profile_url"] = response.meta["profile_url"]
+            yield req
+
+    def parse_friends(self, response):
+        if response.status != 200:
+            logging.error(response.body)
+        else:
+            splash_res = json.loads(response.body)
+            self.store_img("fb_friends.png", splash_res["png"])
+            self.save_response("fb_friends", splash_res["html"])
+            page_sel = Selector(text=splash_res["html"])
+            friends = page_sel.xpath('//ul[contains(@data-pnref, "friends")]/li/div/a/@href').extract()
+            logging.info(friends)
+
