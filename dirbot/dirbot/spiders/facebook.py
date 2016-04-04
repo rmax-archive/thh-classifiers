@@ -27,7 +27,7 @@ class FbSearchItem(Item):
 
 class FbGraphSearchSpider(Spider):
     name = "fb_search"
-    query = "Egorov"
+    query = "Alexander Peremiatov"
     # query delay in seconds
     next_page_delay = 10
     follow_next = False

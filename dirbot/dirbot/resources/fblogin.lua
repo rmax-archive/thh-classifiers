@@ -16,7 +16,7 @@ function main(splash)
   return {
     html = splash:html(),
     png = splash:png(),
-    har = splash:har(),
     cookies = splash:get_cookies(),
+    url = splash:evaljs("window.location.href")
   }
 end
