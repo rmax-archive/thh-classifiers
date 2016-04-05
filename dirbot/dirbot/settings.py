@@ -15,6 +15,16 @@ DOWNLOADER_MIDDLEWARES = {
     'dirbot.splashmware.CustomSplashMiddleware': 700,
     'scrapy.contrib.downloadermiddleware.cookies.CookiesMiddleware': 600,
 }
+# DOWNLOADER_MIDDLEWARES = {
+#     'dirbot.middleware.DelayedRequestsMiddleware': 100,
+#     'scrapyjs.SplashMiddleware': 725,
+#     # 'dirbot.splashmware.CustomSplashMiddleware': 700,
+#     'scrapy.contrib.downloadermiddleware.cookies.CookiesMiddleware': 600,
+#     'scrapyjs.SplashCookiesMiddleware': 723,
+#     # 'scrapyjs.SplashMiddleware': 725,
+#     'scrapy.downloadermiddlewares.httpcompression.HttpCompressionMiddleware': 810,
+# }
+
 
 EXTENSIONS = {
     'scrapy.extensions.throttle.AutoThrottle': None,

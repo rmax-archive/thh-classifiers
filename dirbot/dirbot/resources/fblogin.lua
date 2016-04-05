@@ -1,17 +1,15 @@
 function main(splash)
 --    splash.args.url
   local url = "https://www.facebook.com/login.php"
-  local wait = 2.0
+  local wait = 4.0
+  local email = splash.args.email or 'nikaskriabina@gmail.com'
+  local password = splash.args.password or 'F,hfrflf,hf2016'
   assert(splash:go(url))
   assert(splash:wait(wait))
-  splash:runjs("document.getElementById('email').value = 'nikaskriabina@gmail.com'")
-  splash:runjs("document.getElementById('pass').value = 'F,hfrflf,hf2016'")
+  splash:runjs("document.getElementById('email').value = '".. email .."'")
+  splash:runjs("document.getElementById('pass').value = '".. password .."'")
   splash:runjs("document.getElementById('loginbutton').click()")
   assert(splash:wait(wait))
-  assert(splash:wait(wait))
---  assert(splash:wait(wait))
---  assert(splash:go("https://www.facebook.com/100000118429707/info"))
---  assert(splash:wait(wait))
 --  assert(splash:wait(wait))
   return {
     html = splash:html(),
